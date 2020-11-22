@@ -1,0 +1,8 @@
+[
+  "appengine-api",
+  "objectify",
+  "appengine-endpoints",
+  "cloudasset",
+  "googlebiqqueryapi",
+  "googlecloudstorage"
+]

@@ -1,0 +1,14 @@
+indexes:
+- kind: Posts 
+  properties: 
+    - name: date
+    
+- kind: Posts
+  properties:
+    - name: owner
+      direction: asc    
+
+#-kind: Users
+#  properties:
+#    - name: ID
+#      direction: asc
