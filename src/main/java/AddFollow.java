@@ -38,7 +38,7 @@ public void doGet(HttpServletRequest request, HttpServletResponse response)
     response.setCharacterEncoding("UTF-8");
     
 	if(idFollow == null) {
-		response.sendRedirect("/posts");
+		response.sendRedirect("/posts#" + request.getParameter("divid"));
 	}else {
 		
 		//Ajout du nouveau follower chez le posteur
@@ -101,7 +101,7 @@ public void doGet(HttpServletRequest request, HttpServletResponse response)
 		}
 
 				
-		response.sendRedirect("/posts");
+		response.sendRedirect("/posts#" + request.getParameter("divid"));
 	}    
   }
   

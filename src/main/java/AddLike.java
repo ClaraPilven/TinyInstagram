@@ -39,9 +39,7 @@ public void doGet(HttpServletRequest request, HttpServletResponse response)
 	
 	String key = request.getParameter("key"); //Clé du post
 	long keyLong = Long.parseLong(key);
-	
-	String divID = request.getParameter("divid"); //Id du div où retourner
-	
+		
 	Key keyPost = null;
 	
 	try {
@@ -55,13 +53,7 @@ public void doGet(HttpServletRequest request, HttpServletResponse response)
     response.setCharacterEncoding("UTF-8");
      
 	if(key == null) {
-		System.out.println("key est null");
-		if(divID != null) {
-			System.out.println("divID n'est pas null");
-			response.sendRedirect("/posts#"+divID);
-		}else {
-			response.sendRedirect("/posts");
-		}
+		response.sendRedirect("/posts#" + request.getParameter("divid"));
 	}else {
 		
 		//Recherche du post liké
@@ -74,7 +66,7 @@ public void doGet(HttpServletRequest request, HttpServletResponse response)
 		//on récupère les likes du post et on update l'arrayList
 		ArrayList<String> arrayLikes = new ArrayList<String>();
 		if(ePostLiked == null) {
-			response.sendRedirect("/posts");
+			response.sendRedirect("/posts#" + request.getParameter("divid"));
 		}else {
 			if(ePostLiked.getProperty("listeLikes") != null) {
 				arrayLikes = (ArrayList<String>) ePostLiked.getProperty("listeLikes");
@@ -122,7 +114,7 @@ public void doGet(HttpServletRequest request, HttpServletResponse response)
 			datastore.put(eUser);
 			txn.commit();
 		}
-		response.sendRedirect("/posts");
+		response.sendRedirect("/posts#" + request.getParameter("divid"));
 	}    
   }
 }

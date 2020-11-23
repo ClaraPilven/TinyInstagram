@@ -48,7 +48,7 @@ public void doGet(HttpServletRequest request, HttpServletResponse response)
     
     //S'il n'y a pas de parametre
 	if(idFollow == null) {
-		response.sendRedirect("/posts");
+		response.sendRedirect("/posts#" + request.getParameter("divid"));
 	}else {
 	    Filter followedFilter = new FilterPredicate("followed", FilterOperator.EQUAL, idFollow);
 		Query qFollow = new Query("Follows").setFilter(followedFilter);
@@ -60,7 +60,7 @@ public void doGet(HttpServletRequest request, HttpServletResponse response)
 		if(e.getProperty("followers") != null) {
 			arrayFollowers = (ArrayList<String>) e.getProperty("followers");
 		}else{
-			response.sendRedirect("/posts");
+			response.sendRedirect("/posts#" + request.getParameter("divid"));
 		}
 		
 		arrayFollowers.remove(user.getUserId());
@@ -84,7 +84,7 @@ public void doGet(HttpServletRequest request, HttpServletResponse response)
 		datastore.put(eUser);
 		txn.commit();
 		
-		response.sendRedirect("/posts");
+		response.sendRedirect("/posts#" + request.getParameter("divid"));
 	}    
   }
   

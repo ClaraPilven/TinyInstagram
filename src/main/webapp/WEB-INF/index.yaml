@@ -1,14 +1,23 @@
-indexes:
-- kind: Posts 
-  properties: 
-    - name: date
-    
+indexes:    
 - kind: Posts
   properties:
     - name: owner
-      direction: asc    
+      direction: asc
+    - name: date
+      direction: desc
+      
+- kind: Posts 
+  properties: 
+    - name: nbLike
+      direction: desc  
 
-#-kind: Users
-#  properties:
-#    - name: ID
-#      direction: asc
+- kind: Users
+  properties:
+     - name: ID
+       direction: asc
+    
+- kind: Follows
+  properties:
+    - name: followed
+      direction: asc
+      

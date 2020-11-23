@@ -31,7 +31,7 @@ public class AddPost extends HttpServlet {
 	  	response.setContentType("text/html");
 	    response.setCharacterEncoding("UTF-8");
 
-	    response.getWriter().print("mmm Hello App Engine!\r\n");
+	    response.getWriter().print("Hello App Engine!\r\n");
 	    
 	    Enumeration<String> parametres = request.getParameterNames();
 	    int taille = request.getParameterMap().size();
@@ -43,7 +43,7 @@ public class AddPost extends HttpServlet {
 		PostMessage post = new PostMessage();
 		post.owner = user.getUserId();
 		post.body = body;
-		post.url = user.getUserId()+(Long.MAX_VALUE-(new Date()).getTime());
+		post.url = "https://s1.1zoom.me/b4335/478/Canada_Parks_Mountains_Lake_Forests_Scenery_514472_1920x1080.jpg";
 		
 		//Création de l'entité qui sera enregistré dans la bdd
 		Entity newMsg = new Entity("Posts");
@@ -63,7 +63,7 @@ public class AddPost extends HttpServlet {
 				
 		System.out.println(post.owner+"    "+post.body+"     "+post.url);
 		
-		response.sendRedirect("/posts");
+		response.sendRedirect("/posts#" + request.getParameter("divid"));
 
 		/*response.getWriter().println("</br>"+date.getTime()+"</br>");
 		response.getWriter().println("<div><div>OP (id/nom): "+user.getUserId()+"/"+user.getNickname()+"</div>");

@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.api.services.discovery.model.JsonSchema.Variant.Map;
+import com.google.appengine.api.datastore.*;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -27,13 +28,12 @@ import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
-import com.google.cloud.datastore.StructuredQuery.OrderBy;
 
 /**
  * Servlet implementation class Transaction
  */
-@WebServlet("/posts")
-public class GetAllMessages extends HttpServlet implements Servlet {
+@WebServlet("/postsFollowers")
+public class GetFollowsMessages extends HttpServlet implements Servlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -51,8 +51,6 @@ public class GetAllMessages extends HttpServlet implements Servlet {
 		//Prendre tous les posts
 		Query q = new Query("Posts");
 		q.setKeysOnly();
-		q.addSort("date", SortDirection.DESCENDING);
-
 		
 		PreparedQuery pq = datastore.prepare(q);
 		FetchOptions fetchOptions = FetchOptions.Builder.withLimit(10);
@@ -68,6 +66,7 @@ public class GetAllMessages extends HttpServlet implements Servlet {
 
 	    Filter followsFilter = new FilterPredicate("ID", FilterOperator.EQUAL, userService.getCurrentUser().getUserId());
 		Query qFollows = new Query("Users").setFilter(followsFilter);
+				
 		
 		PreparedQuery pqFollows = datastore.prepare(qFollows);
 		Entity userEntity = pqFollows.asSingleEntity();
@@ -79,10 +78,15 @@ public class GetAllMessages extends HttpServlet implements Servlet {
 		java.util.Map<Key, Entity> msgs = datastore.get(keys); // Get all keys in parallel
 		
 		response.getWriter().println("<button onclick=window.location.href='https://mysecondproject-290312.ey.r.appspot.com/tinyinstahome'>Retour</button><br/>");
-		int i = 1;
+		
 		for (Entity msg : msgs.values()) {
 		
-			response.getWriter().println("<div id='"+ i +"'>Auteur : " + msg.getProperty("owner"));
+			response.getWriter().append("<li> OP : "+msg.getProperty("owner") +
+					"<br/>Message : "+msg.getProperty("body") + 
+					"<br/> Nombre de likes : " + msg.getProperty("nbLike") + 
+					"<br/> Date : " + msg.getProperty("date") + 
+					"<br/>");
+			
 			//Affichage du bouton follow/unfollow
 			if(!(msg.getProperty("owner").equals(userService.getCurrentUser().getUserId()))) {
 				//On ne peut pas follow une personne si on est cette personne
@@ -90,31 +94,22 @@ public class GetAllMessages extends HttpServlet implements Servlet {
 					if(!listeFollows.contains(msg.getProperty("owner").toString())) {
 						response.getWriter().println("<form action='/addFollow' method='get' class='form'>"
 								+ "<input type='text' name='owner' value='"+msg.getProperty("owner")+"' style='display:none'/>"
-								+ "<input hidden=true name='divid' id='divid' value ='" + i + "'>"
-								+ "<input type='submit' value='Follow' style='background-color:greenyellow;'/><br/>"
+								+ "<input type='submit' value='Follow'/><br/>"
 								+ "</form>");
 					//Si on suit déjà la personne -> bouton pour la unfollow
 					}else{
 						response.getWriter().println("<form action='/removeFollow' method='get' class='form'>"
 								+ "<input type='text' name='owner' value='"+msg.getProperty("owner")+"' style='display:none'/>"
-								+ "<input hidden=true name='divid' id='divid' value ='" + i + "'>"
-								+ "<input type='submit' value='Unfollow' style='background-color:crimson;'/><br/>"
+								+ "<input type='submit' value='Unfollow'/><br/>"
 								+ "</form>");
 					}
 				}else {
 					response.getWriter().println("<form action='/addFollow' method='get' class='form'>"
 							+ "<input type='text' name='owner' value='"+msg.getProperty("owner")+"' style='display:none'/>"
-							+ "<input hidden=true name='divid' id='divid' value ='" + i + "'>"
-							+ "<input type='submit' value='Follow' style='background-color:greenyellow;'/><br/>"
+							+ "<input type='submit' value='Follow'/><br/>"
 							+ "</form>");
 				}
 			}			
-			
-			response.getWriter().println("<img src='" + msg.getProperty("url") + "' height='150'>" +
-					"<br/> Message : "+msg.getProperty("body") + 
-					"<br/> Nombre de likes : " + msg.getProperty("nbLike") + 
-					"<br/> Date de publication : " + msg.getProperty("date") + 
-					"<br/>");
 			
 			//Affichage du bouton like/unlike
 			if(!(msg.getProperty("owner").equals(userService.getCurrentUser().getUserId()))) {
@@ -124,31 +119,26 @@ public class GetAllMessages extends HttpServlet implements Servlet {
 						response.getWriter().println("<form action='/addLike' method='get' class='form'>"
 									+ "<input hidden type='text' name='owner' value='"+msg.getProperty("owner")+"' style='display:none'/>"
 									+ "<input hidden type='text' name='key' value='"+msg.getKey().getId()+"'>"
-									+ "<input hidden=true name='divid' id='divid' value ='" + i + "'>"
-									+ "<input type='submit' value='Like' style='background-color:greenyellow;'/><br/>"
+									+ "<input type='submit' value='Like'/><br/>"
 									+ "</form>");
 					//Si on aime déjà le post on affiche le bouton de unlike
 					}else{
 						response.getWriter().println("<form action='/removeLike' method='get' class='form'>"
 								+ "<input type='text' name='owner' value='"+msg.getProperty("owner")+"' style='display:none'/>"		
 								+ "<input hidden type='text' name='key' value='"+msg.getKey().getId()+"'>"
-								+ "<input hidden=true name='divid' id='divid' value ='" + i + "'>"
-								+ "<input type='submit' value='Unlike' style='background-color:crimson ;'/><br/>"
+								+ "<input type='submit' value='Unlike'/><br/>"
 								+ "</form>");
 					}
 				}else {
 					response.getWriter().println("<form action='/addLike' method='get' class='form'>"
 							+ "<input type='text' name='owner' value='"+msg.getProperty("owner")+"' style='display:none'/>"
 							+ "<input hidden type='text' name='key' value='"+msg.getKey().getId()+"'>"
-							+ "<input hidden=true name='divid' id='divid' value ='" + i + "'>"
-							+ "<input type='submit' value='Like' style='background-color:greenyellow;'/><br/>"
+							+ "<input type='submit' value='Like'/><br/>"
 							+ "</form>");
 				}
 			}			
 			
-			response.getWriter().println("</div><br/>");
-			i = i + 1;
+			response.getWriter().println("<br/>");
 		}
-		
 	}
 }

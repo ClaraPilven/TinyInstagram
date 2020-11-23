@@ -32,8 +32,8 @@ import com.google.cloud.datastore.StructuredQuery.OrderBy;
 /**
  * Servlet implementation class Transaction
  */
-@WebServlet("/posts")
-public class GetAllMessages extends HttpServlet implements Servlet {
+@WebServlet("/Myposts")
+public class GetMyMessages extends HttpServlet implements Servlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -81,73 +81,18 @@ public class GetAllMessages extends HttpServlet implements Servlet {
 		response.getWriter().println("<button onclick=window.location.href='https://mysecondproject-290312.ey.r.appspot.com/tinyinstahome'>Retour</button><br/>");
 		int i = 1;
 		for (Entity msg : msgs.values()) {
-		
+			if((msg.getProperty("owner").equals(userService.getCurrentUser().getUserId()))) {
+
 			response.getWriter().println("<div id='"+ i +"'>Auteur : " + msg.getProperty("owner"));
-			//Affichage du bouton follow/unfollow
-			if(!(msg.getProperty("owner").equals(userService.getCurrentUser().getUserId()))) {
-				//On ne peut pas follow une personne si on est cette personne
-				if(listeFollows != null) {
-					if(!listeFollows.contains(msg.getProperty("owner").toString())) {
-						response.getWriter().println("<form action='/addFollow' method='get' class='form'>"
-								+ "<input type='text' name='owner' value='"+msg.getProperty("owner")+"' style='display:none'/>"
-								+ "<input hidden=true name='divid' id='divid' value ='" + i + "'>"
-								+ "<input type='submit' value='Follow' style='background-color:greenyellow;'/><br/>"
-								+ "</form>");
-					//Si on suit déjà la personne -> bouton pour la unfollow
-					}else{
-						response.getWriter().println("<form action='/removeFollow' method='get' class='form'>"
-								+ "<input type='text' name='owner' value='"+msg.getProperty("owner")+"' style='display:none'/>"
-								+ "<input hidden=true name='divid' id='divid' value ='" + i + "'>"
-								+ "<input type='submit' value='Unfollow' style='background-color:crimson;'/><br/>"
-								+ "</form>");
-					}
-				}else {
-					response.getWriter().println("<form action='/addFollow' method='get' class='form'>"
-							+ "<input type='text' name='owner' value='"+msg.getProperty("owner")+"' style='display:none'/>"
-							+ "<input hidden=true name='divid' id='divid' value ='" + i + "'>"
-							+ "<input type='submit' value='Follow' style='background-color:greenyellow;'/><br/>"
-							+ "</form>");
-				}
-			}			
-			
 			response.getWriter().println("<img src='" + msg.getProperty("url") + "' height='150'>" +
 					"<br/> Message : "+msg.getProperty("body") + 
 					"<br/> Nombre de likes : " + msg.getProperty("nbLike") + 
 					"<br/> Date de publication : " + msg.getProperty("date") + 
 					"<br/>");
 			
-			//Affichage du bouton like/unlike
-			if(!(msg.getProperty("owner").equals(userService.getCurrentUser().getUserId()))) {
-				//On ne peut pas like ses propres posts
-				if(listeLikes != null) {
-					if(!listeLikes.contains(Long.toString(msg.getKey().getId()))) {
-						response.getWriter().println("<form action='/addLike' method='get' class='form'>"
-									+ "<input hidden type='text' name='owner' value='"+msg.getProperty("owner")+"' style='display:none'/>"
-									+ "<input hidden type='text' name='key' value='"+msg.getKey().getId()+"'>"
-									+ "<input hidden=true name='divid' id='divid' value ='" + i + "'>"
-									+ "<input type='submit' value='Like' style='background-color:greenyellow;'/><br/>"
-									+ "</form>");
-					//Si on aime déjà le post on affiche le bouton de unlike
-					}else{
-						response.getWriter().println("<form action='/removeLike' method='get' class='form'>"
-								+ "<input type='text' name='owner' value='"+msg.getProperty("owner")+"' style='display:none'/>"		
-								+ "<input hidden type='text' name='key' value='"+msg.getKey().getId()+"'>"
-								+ "<input hidden=true name='divid' id='divid' value ='" + i + "'>"
-								+ "<input type='submit' value='Unlike' style='background-color:crimson ;'/><br/>"
-								+ "</form>");
-					}
-				}else {
-					response.getWriter().println("<form action='/addLike' method='get' class='form'>"
-							+ "<input type='text' name='owner' value='"+msg.getProperty("owner")+"' style='display:none'/>"
-							+ "<input hidden type='text' name='key' value='"+msg.getKey().getId()+"'>"
-							+ "<input hidden=true name='divid' id='divid' value ='" + i + "'>"
-							+ "<input type='submit' value='Like' style='background-color:greenyellow;'/><br/>"
-							+ "</form>");
-				}
-			}			
-			
 			response.getWriter().println("</div><br/>");
 			i = i + 1;
+			}
 		}
 		
 	}

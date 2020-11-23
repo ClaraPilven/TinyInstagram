@@ -38,7 +38,7 @@ public void doGet(HttpServletRequest request, HttpServletResponse response)
 		newMsg.setProperty("date", date.getTime());
 		newMsg.setProperty("owner", i);
 		newMsg.setProperty("body", ""+i+" "+2*i+" "+3*i+" "+4*i+" "+5*i+" "+6*i+" ");
-		newMsg.setProperty("url", "url/de/leur/image");
+		newMsg.setProperty("url", "https://geo.img.pmdstatic.net/fit/http.3A.2F.2Fprd2-bone-image.2Es3-website-eu-west-1.2Eamazonaws.2Ecom.2Fgeo.2F2019.2F02.2F22.2F1c637c86-19b6-4a75-aab9-50817008413d.2Ejpeg/1120x630/background-color/ffffff/quality/70/en-islande-une-incroyable-aurore-boreale-en-forme-de-dragon.jpg");
 		newMsg.setProperty("nbLike", 0);
 		newMsg.setProperty("listeLikes", new ArrayList<String>());
 		

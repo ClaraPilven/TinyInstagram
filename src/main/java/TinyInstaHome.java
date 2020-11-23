@@ -52,6 +52,9 @@ public class TinyInstaHome extends HttpServlet {
 		    		+ "      </tr>\r\n"
 		    		+ "      <tr>\r\n"
 		    		+ "      	<td><a href='/posts'>Liste des postes existants</a> </td>\r\n"
+		    		+ "      </tr>"
+		    		+ "      <tr>\r\n"
+		    		+ "      	<td><a href='/Myposts'>Liste de vos postes</a> </td>\r\n"
 		    		+ "      </tr></table>");
 		    User user = userService.getCurrentUser();
 		    

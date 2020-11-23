@@ -54,11 +54,7 @@ public void doGet(HttpServletRequest request, HttpServletResponse response)
     
     //S'il n'y a pas de parametre
 	if(key == null) {
-		if(divID != null) {
-			response.sendRedirect("/posts#"+divID);
-		}else {
-			response.sendRedirect("/posts");
-		}
+		response.sendRedirect("/posts#" + request.getParameter("divid"));
 	}else {
 		Filter likedFilter = new FilterPredicate(Entity.KEY_RESERVED_PROPERTY, FilterOperator.EQUAL, keyPost);
 		Query qliked = new Query("Posts").setFilter(likedFilter);
@@ -79,7 +75,7 @@ public void doGet(HttpServletRequest request, HttpServletResponse response)
 				ePostLiked.setProperty("nbLike", (long) ePostLiked.getProperty("nbLike")-1);
 			}
 		}else {
-			response.sendRedirect("/posts");
+			response.sendRedirect("/posts#" + request.getParameter("divid"));
 		}
 		
 		//Recherche du user
@@ -118,7 +114,7 @@ public void doGet(HttpServletRequest request, HttpServletResponse response)
 		txn.commit();
 		System.out.println("e fin = "+ePostLiked);
 
-		response.sendRedirect("/posts");
+		response.sendRedirect("/posts#" + request.getParameter("divid"));
 	}    
   }
   
